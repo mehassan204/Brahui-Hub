@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Brahui Language Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Cinzel:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --sand: #e8d5b0;
+    --deep: #1a0e05;
+    --rust: #b5451b;
+    --gold: #c9962a;
+    --clay: #8b4a2a;
+    --cream: #f5ede0;
+    --fog: rgba(232,213,176,0.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--deep);
+    color: var(--sand);
+    font-family: 'Cormorant Garamond', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── BACKGROUND TEXTURE ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(181,69,27,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 90%, rgba(201,150,42,0.10) 0%, transparent 60%),
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(232,213,176,0.015) 40px,
+        rgba(232,213,176,0.015) 41px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── PAGE SECTIONS ─── */
+  .page { display: none; position: relative; z-index: 1; }
+  .page.active { display: block; }
+
+  /* ═══════════════════════════════════════
+     LOGIN PAGE
+  ═══════════════════════════════════════ */
+  #login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .login-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 920px;
+    width: 100%;
+    border: 1px solid rgba(201,150,42,0.25);
+    background: rgba(26,14,5,0.85);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 80px rgba(181,69,27,0.18), inset 0 0 60px rgba(201,150,42,0.04);
+    animation: fadeUp 0.9s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(30px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* Left panel */
+  .login-brand {
+    background: linear-gradient(160deg, rgba(181,69,27,0.28) 0%, rgba(139,74,42,0.15) 100%);
+    border-right: 1px solid rgba(201,150,42,0.2);
+    padding: 3.5rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-brand::before {
+    content: 'ب';
+    position: absolute;
+    font-size: 18rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.04;
+    font-family: 'Playfair Display', serif;
+    color: var(--gold);
+    pointer-events: none;
+  }
+
+  .brand-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    opacity: 0.8;
+  }
+
+  .brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--cream);
+    margin-bottom: 0.6rem;
+  }
+
+  .brand-title span { color: var(--gold); display: block; }
+
+  .brand-subtitle {
+    font-style: italic;
+    font-size: 1.05rem;
+    color: rgba(232,213,176,0.55);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+  }
+
+  .brand-services {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .brand-services span {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.88rem;
+    color: rgba(232,213,176,0.65);
+    letter-spacing: 0.02em;
+  }
+
+  .brand-services span::before {
+    content: '';
+    width: 18px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  /* Right panel */
+  .login-form-panel {
+    padding: 3.5rem 2.8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .login-form-panel h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--rust);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .login-form-panel h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    color: var(--cream);
+    margin-bottom: 2.2rem;
+    font-weight: 700;
+  }
+
+  .form-group { margin-bottom: 1.3rem; }
+
+  .form-group label {
+    display: block;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    color: rgba(232,213,176,0.5);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    font-family: 'Cinzel', serif;
+  }
+
+  .form-group input {
+    width: 100%;
+    background: rgba(232,213,176,0.05);
+    border: 1px solid rgba(201,150,42,0.2);
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    outline: none;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .form-group input:focus {
+    border-color: var(--gold);
+    background: rgba(201,150,42,0.07);
+  }
+
+  .form-group input::placeholder { color: rgba(232,213,176,0.25); }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(201,150,42,0.2);
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    color: rgba(232,213,176,0.4);
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.3s;
+  }
+
+  .tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--rust);
+    border: none;
+    color: var(--cream);
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 0.9rem 1.5rem;
+    cursor: pointer;
+    margin-top: 0.8rem;
+    transition: background 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+
+  .btn-primary:hover { background: var(--clay); box-shadow: 0 4px 24px rgba(181,69,27,0.35); }
+  .btn-primary:hover::after { transform: translateX(100%); }
+
+  .form-note {
+    font-size: 0.82rem;
+    color: rgba(232,213,176,0.35);
+    text-align: center;
+    margin-top: 1.2rem;
+    font-style: italic;
+  }
+
+  /* ═══════════════════════════════════════
+     DASHBOARD
+  ═══════════════════════════════════════ */
+  #dashboard-page { min-height: 100vh; }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 3rem;
+    background: rgba(26,14,5,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(201,150,42,0.15);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 900;
+    color: var(--cream);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .nav-logo .dot { color: var(--gold); }
+
+  .nav-links {
+    display: flex;
+    gap: 2.2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(232,213,176,0.5);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover, .nav-links a.active-link { color: var(--gold); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .user-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    color: rgba(232,213,176,0.55);
+  }
+
+  .btn-logout {
+    background: none;
+    border: 1px solid rgba(201,150,42,0.3);
+    color: rgba(232,213,176,0.5);
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-logout:hover { border-color: var(--rust); color: var(--rust); }
+
+  /* HERO BANNER */
+  .hero {
+    position: relative;
+    padding: 5rem 3rem 3.5rem;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(201,150,42,0.1);
+  }
+
+  .hero::before {
+    content: 'براہوئی';
+    position: absolute;
+    right: -1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 14rem;
+    font-weight: 900;
+    color: rgba(201,150,42,0.045);
+    white-space: nowrap;
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  .hero-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0.75;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1.1;
+    max-width: 600px;
+  }
+
+  .hero-title em { font-style: italic; color: var(--gold); }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: rgba(232,213,176,0.5);
+    margin-top: 1rem;
+    max-width: 420px;
+    line-height: 1.75;
+    font-style: italic;
+  }
+
+  /* SERVICES GRID */
+  .services-section { padding: 3rem 3rem 5rem; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    color: var(--cream);
+    font-weight: 700;
+  }
+
+  .section-header .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(201,150,42,0.25), transparent);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5px;
+    background: rgba(201,150,42,0.12);
+    border: 1px solid rgba(201,150,42,0.12);
+  }
+
+  .service-card {
+    background: rgba(26,14,5,0.95);
+    padding: 2.2rem 1.8rem;
+    cursor: pointer;
+    transition: background 0.35s;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--rust);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.35s ease;
+  }
+
+  .service-card:hover { background: rgba(181,69,27,0.08); }
+  .service-card:hover::before { transform: scaleY(1); }
+
+  .service-icon {
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(201,150,42,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .service-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--rust);
+    text-transform: uppercase;
+  }
+
+  .service-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    color: var(--cream);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .service-desc {
+    font-size: 0.92rem;
+    color: rgba(232,213,176,0.45);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .service-link {
+    margin-top: auto;
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .service-link::after { content: '→'; }
+  .service-card:hover .service-link { opacity: 1; }
+
+  /* QUICK STATS BAR */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid rgba(201,150,42,0.12);
+    border-bottom: 1px solid rgba(201,150,42,0.12);
+    margin: 0 3rem 3rem;
+  }
+
+  .stat {
+    padding: 1.5rem 1rem;
+    border-right: 1px solid rgba(201,150,42,0.12);
+    text-align: center;
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.22em;
+    color: rgba(232,213,176,0.4);
+    text-transform: uppercase;
+    margin-top: 0.35rem;
+    display: block;
+  }
+
+  /* ── SERVICE DETAIL MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(10,5,2,0.82);
+    backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--deep);
+    border: 1px solid rgba(201,150,42,0.25);
+    max-width: 680px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 0 100px rgba(181,69,27,0.2);
+    animation: modalIn 0.35s ease forwards;
+  }
+
+  @keyframes modalIn {
+    from { opacity:0; transform: scale(0.96) translateY(20px); }
+    to   { opacity:1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-header {
+    padding: 2rem 2.2rem 1.5rem;
+    border-bottom: 1px solid rgba(201,150,42,0.15);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .modal-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--cream);
+    font-weight: 700;
+  }
+
+  .modal-header p {
+    font-style: italic;
+    color: rgba(232,213,176,0.45);
+    font-size: 0.95rem;
+    margin-top: 0.3rem;
+  }
+
+  .modal-close {
+    background: none;
+    border: 1px solid rgba(201,150,42,0.2);
+    color: rgba(232,213,176,0.4);
+    width: 36px; height: 36px;
+    cursor: pointer;
+    font-size: 1rem;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover { border-color: var(--rust); color: var(--rust); }
+
+  .modal-body { padding: 2rem 2.2rem; }
+
+  .modal-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+  }
+
+  .option-card {
+    border: 1px solid rgba(201,150,42,0.18);
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .option-card:hover {
+    border-color: var(--gold);
+    background: rgba(201,150,42,0.05);
+  }
+
+  .option-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--cream);
+    margin-bottom: 0.3rem;
+  }
+
+  .option-card p {
+    font-size: 0.82rem;
+    color: rgba(232,213,176,0.4);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .option-card .price {
+    margin-top: 0.6rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  .modal-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-modal-primary {
+    flex: 1;
+    background: var(--rust);
+    border: none;
+    color: var(--cream);
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.5rem;
+    cursor: pointer;
+    transition: background 0.3s;
+    min-width: 150px;
+  }
+
+  .btn-modal-primary:hover { background: var(--clay); }
+
+  .btn-modal-secondary {
+    flex: 1;
+    background: none;
+    border: 1px solid rgba(201,150,42,0.25);
+    color: rgba(232,213,176,0.5);
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.85rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 120px;
+  }
+
+  .btn-modal-secondary:hover { border-color: var(--sand); color: var(--sand); }
+
+  /* FOOTER */
+  .footer {
+    padding: 2rem 3rem;
+    border-top: 1px solid rgba(201,150,42,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: rgba(232,213,176,0.3);
+  }
+
+  .footer-copy {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    color: rgba(232,213,176,0.2);
+    text-transform: uppercase;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 999;
+    background: rgba(181,69,27,0.95);
+    color: var(--cream);
+    padding: 0.9rem 1.6rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    border: 1px solid rgba(201,150,42,0.4);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s;
+    pointer-events: none;
+  }
+
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .login-wrap { grid-template-columns: 1fr; }
+    .login-brand { display: none; }
+    .hero { padding: 3rem 1.5rem 2.5rem; }
+    .hero-title { font-size: 2.4rem; }
+    .services-section { padding: 2rem 1.5rem 4rem; }
+    .services-grid { grid-template-columns: 1fr; }
+    .stats-bar { grid-template-columns: 1fr 1fr; margin: 0 1.5rem 2rem; }
+    .nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .footer { padding: 1.5rem; }
+    .modal-options { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     LOGIN PAGE
+════════════════════════════════════ -->
+<div id="login-page" class="page active">
+  <div class="login-wrap">
+
+    <div class="login-brand">
+      <div class="brand-tag">Brahui Language Institute</div>
+      <div class="brand-title">براہوئی<span>Language Portal</span></div>
+      <div class="brand-subtitle">Preserving and sharing the ancient voice<br>of the Brahui people.</div>
+      <div class="brand-services">
+        <span>Professional Translation Services</span>
+        <span>Interactive Language Lessons</span>
+        <span>Digital E-Book Library</span>
+        <span>Research & Language Projects</span>
+        <span>Audio / Video Translation</span>
+      </div>
+    </div>
+
+    <div class="login-form-panel">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
+        <button class="tab-btn" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="tab-login" class="tab-content active">
+        <h2>Client Access</h2>
+        <h3>Welcome Back</h3>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" placeholder="you@example.com"/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-pass" placeholder="••••••••"/>
+        </div>
+        <button class="btn-primary" onclick="doLogin()">Enter Portal</button>
+        <p class="form-note">Use any email & password to demo the portal.</p>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="tab-register" class="tab-content">
+        <h2>New Client</h2>
+        <h3>Create Account</h3>
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="reg-name" placeholder="Your full name"/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="reg-email" placeholder="you@example.com"/>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="reg-pass" placeholder="Create a password"/>
+        </div>
+        <button class="btn-primary" onclick="doRegister()">Create Account</button>
+        <p class="form-note">No card required. Free consultation on first service.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════
+     DASHBOARD PAGE
+════════════════════════════════════ -->
+<div id="dashboard-page" class="page">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo">Brahui <span class="dot">•</span> Portal</div>
+    <ul class="nav-links">
+      <li><a class="active-link" href="#">Services</a></li>
+      <li><a href="#">My Orders</a></li>
+      <li><a href="#">Messages</a></li>
+      <li><a href="#">Resources</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="user-badge" id="user-name-badge">Client</span>
+      <button class="btn-logout" onclick="doLogout()">Log Out</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Brahui Language Institute — Client Dashboard</div>
+    <h1 class="hero-title">Your Gateway to the <em>Brahui</em> Language</h1>
+    <p class="hero-desc">Expert services in translation, education, and cultural preservation — delivered professionally.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-num">12+</span><span class="stat-label">Years Active</span></div>
+    <div class="stat"><span class="stat-num">2,400+</span><span class="stat-label">Documents Translated</span></div>
+    <div class="stat"><span class="stat-num">340+</span><span class="stat-label">Students Taught</span></div>
+    <div class="stat"><span class="stat-num">80+</span><span class="stat-label">E-Books Available</span></div>
+  </div>
+
+  <!-- SERVICES -->
+  <section class="services-section">
+    <div class="section-header">
+      <h2>Our Services</h2>
+      <div class="line"></div>
+    </div>
+
+    <div class="services-grid">
+
+      <div class="service-card" onclick="openModal('translation')">
+        <div class="service-icon">🌐</div>
+        <div>
+          <div class="service-label">Service 01</div>
+          <div class="service-title">Translation Services</div>
+        </div>
+        <div class="service-desc">Professional Brahui ↔ Urdu / English / Balochi translation for documents, legal texts, literature, and media.</div>
+        <div class="service-link">Request Translation</div>
+      </div>
+
+      <div class="service-card" onclick="openModal('lessons')">
+        <div class="service-icon">📖</div>
+        <div>
+          <div class="service-label">Service 02</div>
+          <div class="service-title">Language Lessons</div>
+        </div>
+        <div class="service-desc">One-on-one or group lessons for beginners through advanced learners. Live sessions and structured coursework.</div>
+        <div class="service-link">Book a Lesson</div>
+      </div>
+
+      <div class="service-card" onclick="openModal('ebooks')">
+        <div class="service-icon">📚</div>
+        <div>
+          <div class="service-label">Service 03</div>
+          <div class="service-title">Buy E-Books</div>
+        </div>
+        <div class="service-desc">Curated digital library of Brahui grammar, literature, poetry, folklore, and learning guides.</div>
+        <div class="service-link">Browse Library</div>
+      </div>
+
+      <div class="service-card" onclick="openModal('projects')">
+        <div class="service-icon">🔬</div>
+        <div>
+          <div class="service-label">Service 04</div>
+          <div class="service-title">Brahui Projects</div>
+        </div>
+        <div class="service-desc">Academic research collaboration, language preservation initiatives, digitization, and documentation projects.</div>
+        <div class="service-link">Join a Project</div>
+      </div>
+
+      <div class="service-card" onclick="openModal('av')">
+        <div class="service-icon">🎬</div>
+        <div>
+          <div class="service-label">Service 05</div>
+          <div class="service-title">Audio / Video Translation</div>
+        </div>
+        <div class="service-desc">Subtitling, dubbing, and transcription for films, podcasts, interviews, documentaries, and lectures.</div>
+        <div class="service-link">Submit Media</div>
+      </div>
+
+      <div class="service-card" onclick="openModal('consult')">
+        <div class="service-icon">💬</div>
+        <div>
+          <div class="service-label">Service 06</div>
+          <div class="service-title">Free Consultation</div>
+        </div>
+        <div class="service-desc">Not sure which service fits your needs? Speak directly with a Brahui language expert — no charge.</div>
+        <div class="service-link">Schedule Call</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-brand">Brahui Language Portal</div>
+    <div class="footer-copy">© 2025 Brahui Language Institute — All rights reserved</div>
+  </footer>
+
+</div>
+
+<!-- ═══════════════════════════════════
+     SERVICE MODALS
+════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal-box">
+    <div class="modal-header">
+      <div>
+        <h2 id="modal-title">Service</h2>
+        <p id="modal-subtitle"></p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-options" id="modal-options"></div>
+      <div class="modal-cta">
+        <button class="btn-modal-primary" id="modal-primary-btn">Request Now</button>
+        <button class="btn-modal-secondary" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─── Tab Switching ───
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // ─── Auth ───
+  function doLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const pass  = document.getElementById('login-pass').value.trim();
+    if (!email || !pass) { showToast('Please fill in all fields.'); return; }
+    const name = email.split('@')[0];
+    document.getElementById('user-name-badge').textContent = name;
+    showDashboard();
+  }
+
+  function doRegister() {
+    const name  = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pass  = document.getElementById('reg-pass').value.trim();
+    if (!name || !email || !pass) { showToast('Please fill in all fields.'); return; }
+    document.getElementById('user-name-badge').textContent = name;
+    showDashboard();
+  }
+
+  function showDashboard() {
+    document.getElementById('login-page').classList.remove('active');
+    document.getElementById('dashboard-page').classList.add('active');
+    showToast('Welcome to the Brahui Language Portal ✦');
+  }
+
+  function doLogout() {
+    document.getElementById('dashboard-page').classList.remove('active');
+    document.getElementById('login-page').classList.add('active');
+    showToast('You have been signed out.');
+  }
+
+  // ─── Modal Data ───
+  const services = {
+    translation: {
+      title: 'Translation Services',
+      subtitle: 'Brahui ↔ English / Urdu / Balochi — certified & literary translations',
+      options: [
+        { h: 'Document Translation', p: 'Official docs, legal texts, academic papers', price: 'From $0.12 / word' },
+        { h: 'Literary Translation', p: 'Books, poetry, folklore, short stories', price: 'From $0.18 / word' },
+        { h: 'Certified Translation', p: 'Notarized, court-accepted documents', price: 'From $45 / page' },
+        { h: 'Express (48h)', p: 'Urgent turnaround for critical projects', price: '+60% surcharge' },
+      ],
+      cta: 'Submit for Translation'
+    },
+    lessons: {
+      title: 'Language Lessons',
+      subtitle: 'Live, structured Brahui instruction for all skill levels',
+      options: [
+        { h: 'Beginner Course', p: 'Alphabet, pronunciation & basic vocabulary', price: '$35 / session' },
+        { h: 'Intermediate Course', p: 'Grammar, sentence structure & reading', price: '$45 / session' },
+        { h: 'Advanced Course', p: 'Literature, dialect, and cultural context', price: '$55 / session' },
+        { h: 'Group Sessions', p: 'Up to 8 students — community learning', price: '$15 / student' },
+      ],
+      cta: 'Book a Session'
+    },
+    ebooks: {
+      title: 'E-Book Library',
+      subtitle: 'Downloadable digital resources — grammar, literature & culture',
+      options: [
+        { h: 'Grammar & Linguistics', p: 'Formal structure, syntax & morphology guides', price: '$8 – $22' },
+        { h: 'Brahui Poetry & Prose', p: 'Classical and contemporary literary works', price: '$6 – $18' },
+        { h: 'Folklore & Oral History', p: 'Traditional tales, proverbs and songs', price: '$5 – $15' },
+        { h: 'Learning Bundles', p: 'Curated starter packs for students', price: '$29 bundle' },
+      ],
+      cta: 'Browse & Purchase'
+    },
+    projects: {
+      title: 'Brahui Projects',
+      subtitle: 'Collaborative preservation, research and documentation initiatives',
+      options: [
+        { h: 'Language Documentation', p: 'Field recordings, dialect mapping & archiving', price: 'Free to join' },
+        { h: 'Academic Research', p: 'Co-author papers on Brahui linguistics', price: 'By proposal' },
+        { h: 'Digitization Project', p: 'Scan and digitize physical Brahui manuscripts', price: 'Volunteer' },
+        { h: 'Custom Project', p: 'NGO, government or institutional collaboration', price: 'Contact us' },
+      ],
+      cta: 'Apply to Participate'
+    },
+    av: {
+      title: 'Audio / Video Translation',
+      subtitle: 'Subtitling, dubbing, and transcription for all media formats',
+      options: [
+        { h: 'Subtitling & Captioning', p: 'SRT/VTT files for films, lectures, reels', price: 'From $2.50 / min' },
+        { h: 'Voice Transcription', p: 'Brahui audio-to-text & vice versa', price: 'From $1.80 / min' },
+        { h: 'Dubbing', p: 'Voice-over by native Brahui speakers', price: 'Custom quote' },
+        { h: 'Podcast / Interview', p: 'Bi-lingual transcript with timestamps', price: 'From $2.00 / min' },
+      ],
+      cta: 'Upload Your Media'
+    },
+    consult: {
+      title: 'Free Consultation',
+      subtitle: 'Talk to a Brahui language expert about your project — no cost',
+      options: [
+        { h: '30-min Video Call', p: 'Google Meet / Zoom session with an expert', price: 'Free' },
+        { h: 'Written Inquiry', p: 'Submit your query — reply within 24 hours', price: 'Free' },
+        { h: 'Project Brief Review', p: 'Send a doc — we review and advise', price: 'Free' },
+        { h: 'WhatsApp Chat', p: 'Direct message with our team', price: 'Free' },
+      ],
+      cta: 'Book Consultation'
+    }
+  };
+
+  function openModal(key) {
+    const s = services[key];
+    document.getElementById('modal-title').textContent = s.title;
+    document.getElementById('modal-subtitle').textContent = s.subtitle;
+    document.getElementById('modal-primary-btn').textContent = s.cta;
+    document.getElementById('modal-primary-btn').onclick = () => { closeModal(); showToast('Request submitted! We will contact you shortly.'); };
+
+    const opts = document.getElementById('modal-options');
+    opts.innerHTML = s.options.map(o => `
+      <div class="option-card">
+        <h4>${o.h}</h4>
+        <p>${o.p}</p>
+        <div class="price">${o.price}</div>
+      </div>
+    `).join('');
+
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  }
+
+  // ─── Toast ───
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3400);
+  }
+
+  // Allow Enter key on login
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('login-page').classList.contains('active')) {
+      const active = document.querySelector('.tab-content.active');
+      if (active.id === 'tab-login') doLogin();
+      else doRegister();
+    }
+  });
+</script>
+</body>
+</html>
